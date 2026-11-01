@@ -17,8 +17,8 @@
 
 从 [Releases](https://github.com/zqa1218/AI-shortvideo-plat_manager/releases) 下载：
 
-- `猫后台助手_Setup_1.0.0.exe`：安装包，装到当前用户目录（`%LOCALAPPDATA%\Programs\猫后台助手`），创建开始菜单快捷方式、可选桌面图标、可在「应用和功能」卸载。
-- `猫后台助手_v1.0.0_portable.zip`：免安装版，解压后直接运行 `猫后台助手.exe`。
+- `CatHelper-Setup-1.0.0.exe`：安装包，装到当前用户目录（`%LOCALAPPDATA%\Programs\猫后台助手`），创建开始菜单快捷方式、可选桌面图标、可在「应用和功能」卸载。
+- `CatHelper-1.0.0-portable.zip`：免安装版，解压后直接运行 `猫后台助手.exe`。
 
 两者都不需要管理员权限。安装包**不包含**第三方 `social-auto-upload`，因此首次使用只有「手动/半自动发布」可用；要启用自动发布与自动采集，见下一节。
 

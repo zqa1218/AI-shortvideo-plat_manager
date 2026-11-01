@@ -4,8 +4,9 @@
 #   powershell -ExecutionPolicy Bypass -File build-release.ps1
 #
 # 产物：
-#   release\猫后台助手_Setup_1.0.0.exe      安装包（含卸载、开始菜单、可选桌面快捷方式）
-#   release\猫后台助手_v1.0.0_portable.zip  免安装压缩包
+#   release\CatHelper-Setup-1.0.0.exe      安装包（含卸载、开始菜单、可选桌面快捷方式）
+#   release\CatHelper-1.0.0-portable.zip   免安装压缩包
+# 注：产物名用 ASCII，GitHub Releases 会把中文资产名替换成下划线。
 
 # 注意：不要设成 Stop。git/pip/PyInstaller 会往 stderr 写进度，Stop 会把它们当成致命错误。
 $ErrorActionPreference = "Continue"
@@ -59,7 +60,7 @@ Get-ChildItem -LiteralPath $payload -Recurse -Directory -Filter "__pycache__" -E
     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host "[3/5] 生成免安装压缩包" -ForegroundColor Cyan
-$zip = Join-Path $release ("猫后台助手_v" + $version + "_portable.zip")
+$zip = Join-Path $release ("CatHelper-" + $version + "-portable.zip")
 if (Test-Path $zip) { Remove-Item -LiteralPath $zip -Force }
 Push-Location $payload
 & $sevenZip a -tzip -mx=9 $zip "*" | Out-Null

@@ -1,4 +1,4 @@
-; 猫后台助手 安装包脚本（Inno Setup 6）
+﻿; 猫后台助手 安装包脚本（Inno Setup 6）
 ; 构建：先运行 build-release.ps1 生成 release\payload，再用 ISCC.exe 编译本文件。
 
 #define MyAppName "猫后台助手"

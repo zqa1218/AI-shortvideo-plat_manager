@@ -32,6 +32,8 @@ powershell -ExecutionPolicy Bypass -File tools\setup-vendor.ps1
 
 脚本会把仓库克隆到 `vendor/social-auto-upload`、创建 `.venv`、安装依赖与 patchright 的 Chromium，并生成 `conf.py`。前置条件：Python 3.12、能访问 GitHub 与 PyPI。装完后回到「账号管理」扫码登录即可。
 
+脚本还会自动应用 `vendor-patches/` 里的必要修复（抖音图文标题选择器、本地 Chrome 路径）。没有这些补丁，新克隆的上游代码会让抖音图文发布再次因「找不到标题输入框」而超时。
+
 从源码运行时，若 `vendor/` 就在项目内，应用会自动找到它；安装版请在安装目录里执行上面的脚本（开始菜单里有「安装自动发布依赖」快捷方式）。
 
 ## 运行

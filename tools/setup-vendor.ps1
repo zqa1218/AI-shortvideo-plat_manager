@@ -36,6 +36,29 @@ if (-not (Test-Path (Join-Path $target ".git"))) {
     Write-Host "[2/5] 已存在 vendor/social-auto-upload，跳过克隆" -ForegroundColor DarkGray
 }
 
+# 本项目的必要修复（抖音图文标题选择器、本地 Chrome 路径）以补丁形式随仓库提供，
+# 否则新克隆到的是上游原版，抖音图文发布会再次因选择器不匹配而超时。
+$patch = Join-Path $root "vendor-patches\0001-douyin-note-and-chrome-path.patch"
+if (Test-Path $patch) {
+    Push-Location $target
+    git apply --check $patch 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[2.5/5] 应用本地修复补丁" -ForegroundColor Cyan
+        git apply $patch
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "补丁应用失败，请手动检查 uploader/douyin_uploader/main.py 的 DOUYIN_TITLE_SELECTORS"
+        }
+    } else {
+        git apply --check -R $patch 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[2.5/5] 修复补丁已应用，跳过" -ForegroundColor DarkGray
+        } else {
+            Write-Warning "补丁与当前上游代码不匹配（上游可能已改版），未应用。若抖音图文发布报『找不到标题输入框』，需手动更新选择器。"
+        }
+    }
+    Pop-Location
+}
+
 $venv = Join-Path $target ".venv"
 $venvPython = Join-Path $venv "Scripts\python.exe"
 if (-not (Test-Path $venvPython)) {

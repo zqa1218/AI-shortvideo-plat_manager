@@ -24,11 +24,31 @@ function Assert-LastExit([string]$what) {
 if (-not (Test-Path $iscc)) { throw "未找到 Inno Setup：$iscc" }
 if (-not (Test-Path $sevenZip)) { throw "未找到 7-Zip：$sevenZip" }
 
+# PyInstaller --noconfirm 会整体删除 dist\<name>（连同用户数据 data\），
+# 打包前先把 data\ 挪出去，打包完再原样放回，避免每次构建都丢账号与发布记录。
+$dataDir = Join-Path $dist "data"
+$dataBak = Join-Path $env:TEMP ("mao_data_bak_" + [guid]::NewGuid().ToString("N"))
+$hasData = Test-Path $dataDir
+if ($hasData) {
+    Move-Item -LiteralPath $dataDir -Destination $dataBak -Force
+    Write-Host "已暂存用户数据 data\（打包完成后自动还原）" -ForegroundColor DarkYellow
+}
+
 Write-Host "[1/5] PyInstaller 打包" -ForegroundColor Cyan
-Push-Location $root
-python -m PyInstaller --noconfirm "猫后台助手.spec" 2>&1 | Select-Object -Last 3 | Out-Host
-Assert-LastExit "PyInstaller"
-Pop-Location
+try {
+    Push-Location $root
+    python -m PyInstaller --noconfirm "猫后台助手.spec" 2>&1 | Select-Object -Last 3 | Out-Host
+    Assert-LastExit "PyInstaller"
+} finally {
+    Pop-Location
+    if ($hasData -and (Test-Path $dataBak)) {
+        $target = Join-Path $dist "data"
+        if (Test-Path $target) { Remove-Item -LiteralPath $target -Recurse -Force }
+        Copy-Item -LiteralPath $dataBak -Destination $target -Recurse -Force
+        Remove-Item -LiteralPath $dataBak -Recurse -Force
+        Write-Host "用户数据 data\ 已还原" -ForegroundColor DarkYellow
+    }
+}
 
 Write-Host "[2/5] 准备安装载荷（排除用户数据 data\）" -ForegroundColor Cyan
 if (Test-Path $payload) { Remove-Item -LiteralPath $payload -Recurse -Force }
